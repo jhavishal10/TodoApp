@@ -53,7 +53,7 @@ class TasksAdapter(private val adapterCallbackInterface: AdapterCallbackInterfac
             }
             itemView.markDoneButton.debouncedOnClick {
                 val item = itemView.tag as ListItem
-                callback.markDoneClicked(item,position)
+                callback.markDoneClicked(item)
             }
             itemView.debouncedOnClick {
                 val item = itemView.tag as ListItem
@@ -65,11 +65,13 @@ class TasksAdapter(private val adapterCallbackInterface: AdapterCallbackInterfac
             with(itemView) {
                 tag = item
                 if (item.done == 1) {
+                    itemView.markDoneButton.isChecked = true
                     taskName.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
                     undoButton.isVisible = true
                     deleteButton.isVisible = true
                     markDoneButton.isVisible = false
                 } else {
+                    itemView.markDoneButton.isChecked = false
                     taskName.paintFlags = Paint.ANTI_ALIAS_FLAG
                     undoButton.isVisible = false
                     deleteButton.isVisible = false
@@ -86,10 +88,10 @@ class TasksAdapter(private val adapterCallbackInterface: AdapterCallbackInterfac
 }
 
 interface AdapterCallbackInterface {
-    fun undoClicked(task:ListItem)
-    fun deleteClicked(task:ListItem)
-    fun markDoneClicked(task:ListItem,pos:Int)
-    fun taskClicked(task:ListItem)
+    fun undoClicked(task: ListItem)
+    fun deleteClicked(task: ListItem)
+    fun markDoneClicked(task: ListItem)
+    fun taskClicked(task: ListItem)
 }
 
 inline fun View.debouncedOnClick(debounceTill: Long = 500, crossinline onClick: (v: View) -> Unit) {

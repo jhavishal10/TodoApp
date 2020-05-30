@@ -4,6 +4,7 @@ import android.com.urbanclapassignment.R
 import android.com.urbanclapassignment.model.ListItem
 import android.com.urbanclapassignment.model.TasksState
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -72,9 +73,11 @@ class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
         viewModel.deleteClicked(task)
     }
 
-    override fun markDoneClicked(task: ListItem, pos: Int) {
-        viewModel.markDone(task)
-        initUi()
+    override fun markDoneClicked(task: ListItem) {
+        Handler().postDelayed({
+            viewModel.markDone(task)
+        }, 500)
+
     }
 
     override fun taskClicked(task: ListItem) {
