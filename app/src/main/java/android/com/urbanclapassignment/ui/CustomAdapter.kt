@@ -11,7 +11,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.list_item.view.*
 
-class TasksAdapter : RecyclerView.Adapter<TasksAdapter.IpoCompanyBusinessViewHolder>() {
+class TasksAdapter(private val adapterCallbackInterface: AdapterCallbackInterface) : RecyclerView.Adapter<TasksAdapter.IpoCompanyBusinessViewHolder>() {
 
     private val list = mutableListOf<ListItem>()
 
@@ -29,31 +29,40 @@ class TasksAdapter : RecyclerView.Adapter<TasksAdapter.IpoCompanyBusinessViewHol
         viewType: Int
     ): IpoCompanyBusinessViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item, parent, false)
-        return IpoCompanyBusinessViewHolder(view)
+        return IpoCompanyBusinessViewHolder(view,adapterCallbackInterface)
 
     }
 
-    inner class IpoCompanyBusinessViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class IpoCompanyBusinessViewHolder(view: View, callback: AdapterCallbackInterface) : RecyclerView.ViewHolder(view) {
 
         init {
             itemView.deleteButton.debouncedOnClick {
-
+                val item = it.tag as ListItem
+                    callback.deleteClicked(item.taskId)
             }
             itemView.undoButton.debouncedOnClick {
-
+                val item = it.tag as ListItem
+                callback.undoClicked(item.taskId)
             }
             itemView.markDoneButton.debouncedOnClick {
-
+                val item = it.tag as ListItem
+                callback.markDoneClicked(item.taskId)
+            }
+            itemView.debouncedOnClick {
+                val item = it.tag as ListItem
+                callback.taskClicked(item.taskId)
             }
         }
+
         fun bind(item: ListItem) {
             with(itemView) {
-                if(item.done){
+                tag = item
+                if (item.done) {
                     taskName.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
                     undoButton.isVisible = true
                     deleteButton.isVisible = true
                     markDoneButton.isVisible = false
-                }else {
+                } else {
                     undoButton.isVisible = false
                     deleteButton.isVisible = false
                     markDoneButton.isVisible = true
@@ -67,8 +76,13 @@ class TasksAdapter : RecyclerView.Adapter<TasksAdapter.IpoCompanyBusinessViewHol
     override fun onBindViewHolder(holder: IpoCompanyBusinessViewHolder, position: Int) {
         holder.bind(list[position])
     }
-
 }
+    interface AdapterCallbackInterface {
+        fun undoClicked(id: Int)
+        fun deleteClicked(id: Int)
+        fun markDoneClicked(id: Int)
+        fun taskClicked(id: Int)
+    }
 
 inline fun View.debouncedOnClick(debounceTill: Long = 500, crossinline onClick: (v: View) -> Unit) {
     this.setOnClickListener(object : DebouncedOnClickListener(debounceTill) {

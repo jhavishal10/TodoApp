@@ -13,8 +13,8 @@ import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.add_new_task_layout.view.*
 
 
-class HomeActivity : AppCompatActivity() {
-    private val adapter = TasksAdapter()
+class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
+    private val adapter = TasksAdapter(this)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,12 +32,16 @@ class HomeActivity : AppCompatActivity() {
             alertDialog.setCancelable(false)
             alertDialog.show()
             mView.addTaskButton.debouncedOnClick {
+                if (!mView.taskText.text.isNullOrEmpty()) {
+                    Toast.makeText(
+                        applicationContext,
+                        mView.taskText.text.toString()
+                            .substring(0, mView.taskText.text.toString().length) + "........Added",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    //add new task in the database
+                }
                 alertDialog.dismiss()
-                Toast.makeText(
-                    applicationContext,
-                    mView.taskText.text.toString().substring(0, 20) + "........Added",
-                    Toast.LENGTH_LONG
-                ).show()
             }
 
         }
@@ -45,5 +49,21 @@ class HomeActivity : AppCompatActivity() {
         adapter.addData(task)
         taskRecyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         taskRecyclerView.adapter = adapter
+    }
+
+    override fun undoClicked(id: Int) {
+        // change the status of task in database
+    }
+
+    override fun deleteClicked(id: Int) {
+        //delete this task from database
+    }
+
+    override fun markDoneClicked(id: Int) {
+        // mark this task done in database
+    }
+
+    override fun taskClicked(id: Int) {
+        //open task editor Ui for this
     }
 }
