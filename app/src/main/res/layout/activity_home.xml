@@ -27,7 +27,8 @@
             android:textSize="24sp"
             android:textStyle="bold" />
 
-        <ImageView
+        <ImageButton
+            android:background="?attr/selectableItemBackground"
             android:id="@+id/addNewTaskButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
