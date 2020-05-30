@@ -36,7 +36,7 @@
             android:layout_weight="1"
             android:button="@drawable/checkbox"
             android:paddingEnd="20dp"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
 
         <ImageView
             android:id="@+id/undoButton"
@@ -45,7 +45,7 @@
             android:layout_weight="1"
             android:padding="4dp"
             android:src="@drawable/ic_undo"
-            tools:visibility="visible" />
+            tools:visibility="gone" />
 
         <ImageView
             android:id="@+id/deleteButton"
@@ -54,7 +54,7 @@
             android:layout_weight="1"
             android:padding="5dp"
             android:src="@drawable/ic_delete"
-            tools:visibility="visible" />
+            tools:visibility="gone" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>
