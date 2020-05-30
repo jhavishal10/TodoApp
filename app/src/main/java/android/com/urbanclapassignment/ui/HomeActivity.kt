@@ -1,5 +1,6 @@
-package android.com.urbanclapassignment
+package android.com.urbanclapassignment.ui
 
+import android.com.urbanclapassignment.R
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
