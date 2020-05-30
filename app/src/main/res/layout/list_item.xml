@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:layout_margin="15dp"
     android:padding="20dp"
     app:cardCornerRadius="5dp"
     app:cardElevation="4dp">
@@ -14,13 +14,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
+        android:background="@color/white"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/taskName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="5"
+            android:layout_weight="4"
             android:fontFamily="monospace"
             android:padding="10dp"
             android:textColor="@color/black"
@@ -28,23 +29,23 @@
             tools:text="Complete my Urban Company Assignment" />
 
         <CheckBox
-            android:id="@+id/completeTick"
+            android:id="@+id/markDoneButton"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="10dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:background="@drawable/ic_checkbox"
-            android:button="@drawable/ic_tick"
-            android:gravity="center_vertical" />
+            android:button="@drawable/checkbox"
+            android:paddingEnd="20dp"
+            tools:visibility="gone" />
 
         <ImageView
             android:id="@+id/undoButton"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:padding="5dp"
+            android:padding="4dp"
             android:src="@drawable/ic_undo"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
 
         <ImageView
             android:id="@+id/deleteButton"
@@ -53,7 +54,7 @@
             android:layout_weight="1"
             android:padding="5dp"
             android:src="@drawable/ic_delete"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>
