@@ -1,7 +1,7 @@
 package android.com.urbanclapassignment.ui
 
+import android.com.todo.R
 import android.com.urbanclapassignment.DebouncedOnClickListener
-import android.com.urbanclapassignment.R
 import android.com.urbanclapassignment.model.ListItem
 import android.com.urbanclapassignment.model.ListItem.Companion.DIFF_UTIL
 import android.graphics.Paint
