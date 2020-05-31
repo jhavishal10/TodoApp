@@ -5,10 +5,14 @@ import android.com.urbanclapassignment.model.ListItem
 import android.com.urbanclapassignment.model.TasksState
 import android.os.Bundle
 import android.os.Handler
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,7 +24,9 @@ import kotlinx.android.synthetic.main.add_new_task_layout.view.*
 class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
     private val adapter = TasksAdapter(this)
     private lateinit var viewModel: ViewModel
-
+    private var tasksList = mutableListOf<ListItem>()
+    private var searchBarOn = false
+    private var searchText = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +39,12 @@ class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
         viewModel = AndroidViewModelFactory(application).create(ViewModel::class.java)
         viewModel.tasksLiveData.observe(this, Observer {
             when (it) {
-                is TasksState.Data -> adapter.addData(it.list)
+                is TasksState.Data -> {
+                    tasksList = it.list.toMutableList()
+                    if (!searchBarOn)
+                        adapter.addData(it.list)
+                    else filter(searchText)
+                }
                 is TasksState.Clear -> adapter.clearItems()
             }
         })
@@ -42,6 +53,44 @@ class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
     private fun initUi() {
         taskRecyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         taskRecyclerView.adapter = adapter
+        val snapHelper = StartSnapHelper()
+        snapHelper.attachToRecyclerView(taskRecyclerView)
+        searchButton.debouncedOnClick {
+            searchBarOn = true
+            searchEditText.isVisible = true
+            searchClose.isVisible = true
+        }
+        searchClose.debouncedOnClick {
+            searchBarOn = false
+            searchEditText.isVisible = false
+            searchClose.isVisible = false
+            searchEditText.clearComposingText()
+            adapter.clearItems()
+            adapter.addData(tasksList)
+        }
+        searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(
+                s: CharSequence,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+            }
+
+            override fun onTextChanged(
+                s: CharSequence,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {
+            }
+
+            override fun afterTextChanged(s: Editable) {
+                searchText = s.toString()
+                filter(s.toString())
+            }
+        })
+
         addNewTaskButton.debouncedOnClick {
             val builder = AlertDialog.Builder(this)
             val mView: View = layoutInflater.inflate(R.layout.add_new_task_layout, null)
@@ -55,7 +104,7 @@ class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
                         applicationContext,
                         mView.taskText.text.toString()
                             .substring(0, mView.taskText.text.toString().length) + "........Added",
-                        Toast.LENGTH_LONG
+                        Toast.LENGTH_SHORT
                     ).show()
 
                     viewModel.addItem(mView.taskText.text.toString())
@@ -63,6 +112,18 @@ class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
                 alertDialog.dismiss()
             }
         }
+    }
+
+    private fun filter(text: String) {
+        Log.e("hola", text)
+        val filteredList = mutableListOf<ListItem>()
+        for (item in tasksList) {
+            if (item.taskName.toLowerCase().contains(text.toLowerCase())) {
+                filteredList.add(item)
+            }
+        }
+        adapter.clearItems()
+        adapter.filterList(filteredList)
     }
 
     override fun undoClicked(task: ListItem) {
@@ -73,9 +134,9 @@ class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
         viewModel.deleteClicked(task)
     }
 
-    override fun markDoneClicked(task: ListItem) {
+    override fun markDoneClicked(task: ListItem, pos: Int) {
         Handler().postDelayed({
-            viewModel.markDone(task)
+            viewModel.markDone(task, pos)
         }, 500)
 
     }
