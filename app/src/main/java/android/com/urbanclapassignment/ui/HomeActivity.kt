@@ -1,12 +1,14 @@
 package android.com.urbanclapassignment.ui
 
 import android.com.urbanclapassignment.R
+import android.com.urbanclapassignment.StartSnapHelper
 import android.com.urbanclapassignment.model.ListItem
 import android.com.urbanclapassignment.model.TasksState
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -18,7 +20,9 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.add_new_task_layout.*
 import kotlinx.android.synthetic.main.add_new_task_layout.view.*
+import kotlinx.android.synthetic.main.add_new_task_layout.view.prioritySpinner
 
 
 class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
@@ -97,8 +101,7 @@ class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
                             .substring(0, mView.taskText.text.toString().length) + "........Added",
                         Toast.LENGTH_SHORT
                     ).show()
-
-                    viewModel.addItem(mView.taskText.text.toString())
+                    viewModel.addItem(mView.taskText.text.toString(), mView.prioritySpinner.selectedItemPosition)
                 }
                 alertDialog.dismiss()
             }

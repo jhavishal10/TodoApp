@@ -18,6 +18,7 @@ class TasksDBHelper(context: Context?) :
                 TasksEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 TasksEntry.COLUMN_TASK + " TEXT NOT NULL, " +
                 TasksEntry.COLUMN_STATUS + " INTEGER NOT NULL, " +
+                TasksEntry.COLUMN_PRIORITY + " INTEGER NOT NULL, " +
                 TasksEntry.COLUMN_TIMESTAMP + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP"+");"
         db.execSQL(SQL_CREATE_TASKLIST_TABLE)
     }

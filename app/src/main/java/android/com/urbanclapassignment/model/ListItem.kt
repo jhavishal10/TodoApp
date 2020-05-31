@@ -5,7 +5,8 @@ import androidx.recyclerview.widget.DiffUtil
 data class ListItem(
     val taskId: Long,
     val taskName: String,
-    val done: Int
+    val done: Int,
+    val priority: Int
 ) {
     companion object {
 

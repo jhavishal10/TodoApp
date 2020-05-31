@@ -1,4 +1,4 @@
-package android.com.urbanclapassignment.ui;
+package android.com.urbanclapassignment;
 
 
 import android.view.View;
