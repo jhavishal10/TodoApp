@@ -124,12 +124,12 @@ class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
         }
     }
 
-    fun showKeyboard(ettext: EditText) {
-        ettext.requestFocus()
-        ettext.postDelayed({
+    private fun showKeyboard(etText: EditText) {
+        etText.requestFocus()
+        etText.postDelayed({
             val keyboard: InputMethodManager =
                 getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            keyboard.showSoftInput(ettext, 0)
+            keyboard.showSoftInput(etText, 0)
         }
             , 200)
     }

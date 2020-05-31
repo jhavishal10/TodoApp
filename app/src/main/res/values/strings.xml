@@ -3,4 +3,6 @@
     <string name="to_do">To-Do</string>
     <string name="add_task">Add Task</string>
     <string name="start_typing">Start typing ......</string>
+    <string name="type_here">Type here...</string>
+    <string name="no_tasks_available">No Tasks Available</string>
 </resources>
