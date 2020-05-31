@@ -8,8 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_splash.*
 
 class SplashActivity : AppCompatActivity() {
-
-    private val LENGTH: Long = 1800
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
@@ -18,6 +16,6 @@ class SplashActivity : AppCompatActivity() {
         Handler().postDelayed({
             this.startActivity(Intent(this, HomeActivity::class.java))
             this.finish()
-        }, LENGTH)
+        }, 1800)
     }
 }
