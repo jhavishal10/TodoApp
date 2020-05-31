@@ -8,6 +8,7 @@ import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -50,6 +51,9 @@ class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
     }
 
     private fun initUi() {
+        val priorities = mutableListOf("Right Now","Asap","Today","Tomorrow","In this week","In next week","In this month","In next month")
+        val priorityAdapter: ArrayAdapter<String> = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, priorities)
+        priorityAdapter.setDropDownViewResource(R.layout.spinner_item)
         taskRecyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         taskRecyclerView.adapter = adapter
         val snapHelper = StartSnapHelper()
@@ -83,6 +87,8 @@ class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
             val alertDialog: AlertDialog = builder.create()
             alertDialog.setCancelable(true)
             alertDialog.show()
+            mView.prioritySpinner.adapter = priorityAdapter
+            mView.prioritySpinner.setSelection(2,true)
             mView.addTaskButton.debouncedOnClick {
                 if (!mView.taskText.text.isNullOrEmpty()) {
                     Toast.makeText(
@@ -110,21 +116,13 @@ class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
         adapter.filterList(filteredList)
     }
 
-    override fun undoClicked(task: ListItem) {
-        viewModel.undoClicked(task)
-    }
-
-    override fun deleteClicked(task: ListItem) {
-        viewModel.deleteClicked(task)
-    }
-
+    override fun undoClicked(task: ListItem) { viewModel.undoClicked(task) }
+    override fun deleteClicked(task: ListItem) { viewModel.deleteClicked(task) }
     override fun markDoneClicked(task: ListItem, pos: Int) {
         Handler().postDelayed({
             viewModel.markDone(task, pos)
         }, 500)
-
     }
-
     override fun taskClicked(task: ListItem) {
         //open task editor Ui for this future extension for better UI
     }
