@@ -45,6 +45,7 @@ class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
             when (it) {
                 is TasksState.Data -> {
                     tasksList = it.list.toMutableList()
+                    emptyText.isVisible = tasksList.isNullOrEmpty()
                     if (!searchBarOn)
                         adapter.addData(it.list)
                     else filter(searchText)
@@ -55,8 +56,18 @@ class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
     }
 
     private fun initUi() {
-        val priorities = mutableListOf("Right Now","Asap","Today","Tomorrow","In this week","In next week","In this month","In next month")
-        val priorityAdapter: ArrayAdapter<String> = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, priorities)
+        val priorities = mutableListOf(
+            "Right Now",
+            "Asap",
+            "Today",
+            "Tomorrow",
+            "In this week",
+            "In next week",
+            "In this month",
+            "In next month"
+        )
+        val priorityAdapter: ArrayAdapter<String> =
+            ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, priorities)
         priorityAdapter.setDropDownViewResource(R.layout.spinner_item)
         taskRecyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         taskRecyclerView.adapter = adapter
@@ -94,7 +105,7 @@ class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
             alertDialog.setCancelable(true)
             alertDialog.show()
             mView.prioritySpinner.adapter = priorityAdapter
-            mView.prioritySpinner.setSelection(2,true)
+            mView.prioritySpinner.setSelection(2, true)
             mView.addTaskButton.debouncedOnClick {
                 if (!mView.taskText.text.isNullOrEmpty()) {
                     Toast.makeText(
@@ -103,12 +114,16 @@ class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
                             .substring(0, mView.taskText.text.toString().length) + "........Added",
                         Toast.LENGTH_SHORT
                     ).show()
-                    viewModel.addItem(mView.taskText.text.toString(), mView.prioritySpinner.selectedItemPosition)
+                    viewModel.addItem(
+                        mView.taskText.text.toString(),
+                        mView.prioritySpinner.selectedItemPosition
+                    )
                 }
                 alertDialog.dismiss()
             }
         }
     }
+
     fun showKeyboard(ettext: EditText) {
         ettext.requestFocus()
         ettext.postDelayed({
@@ -118,6 +133,7 @@ class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
         }
             , 200)
     }
+
     private fun filter(text: String) {
         val filteredList = mutableListOf<ListItem>()
         for (item in tasksList) {
@@ -129,13 +145,20 @@ class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
         adapter.filterList(filteredList)
     }
 
-    override fun undoClicked(task: ListItem) { viewModel.undoClicked(task) }
-    override fun deleteClicked(task: ListItem) { viewModel.deleteClicked(task) }
+    override fun undoClicked(task: ListItem) {
+        viewModel.undoClicked(task)
+    }
+
+    override fun deleteClicked(task: ListItem) {
+        viewModel.deleteClicked(task)
+    }
+
     override fun markDoneClicked(task: ListItem, pos: Int) {
         Handler().postDelayed({
             viewModel.markDone(task, pos)
         }, 500)
     }
+
     override fun taskClicked(task: ListItem) {
         //open task editor Ui for this future extension for better UI
     }
