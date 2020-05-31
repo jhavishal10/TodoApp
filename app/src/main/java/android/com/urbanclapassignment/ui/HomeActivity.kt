@@ -4,13 +4,15 @@ import android.com.urbanclapassignment.R
 import android.com.urbanclapassignment.StartSnapHelper
 import android.com.urbanclapassignment.model.ListItem
 import android.com.urbanclapassignment.model.TasksState
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -20,9 +22,7 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.add_new_task_layout.*
 import kotlinx.android.synthetic.main.add_new_task_layout.view.*
-import kotlinx.android.synthetic.main.add_new_task_layout.view.prioritySpinner
 
 
 class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
@@ -66,6 +66,8 @@ class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
             searchBarOn = true
             searchEditText.isVisible = true
             searchClose.isVisible = true
+            showKeyboard(searchEditText)
+
         }
         searchClose.debouncedOnClick {
             searchBarOn = false
@@ -107,7 +109,15 @@ class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
             }
         }
     }
-
+    fun showKeyboard(ettext: EditText) {
+        ettext.requestFocus()
+        ettext.postDelayed({
+            val keyboard: InputMethodManager =
+                getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            keyboard.showSoftInput(ettext, 0)
+        }
+            , 200)
+    }
     private fun filter(text: String) {
         val filteredList = mutableListOf<ListItem>()
         for (item in tasksList) {
