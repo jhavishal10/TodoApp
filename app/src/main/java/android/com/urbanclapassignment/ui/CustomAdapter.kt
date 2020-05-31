@@ -3,16 +3,18 @@ package android.com.urbanclapassignment.ui
 import android.com.urbanclapassignment.DebouncedOnClickListener
 import android.com.urbanclapassignment.R
 import android.com.urbanclapassignment.model.ListItem
+import android.com.urbanclapassignment.model.ListItem.Companion.DIFF_UTIL
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.list_item.view.*
 
 class TasksAdapter(private val adapterCallbackInterface: AdapterCallbackInterface) :
-    RecyclerView.Adapter<TasksAdapter.IpoCompanyBusinessViewHolder>() {
+    ListAdapter<ListItem, TasksAdapter.TaskItemViewHolder>(DIFF_UTIL) {
 
     private val list = mutableListOf<ListItem>()
 
@@ -26,6 +28,11 @@ class TasksAdapter(private val adapterCallbackInterface: AdapterCallbackInterfac
         notifyDataSetChanged()
     }
 
+    fun filterList(filteredList: List<ListItem>) {
+        this.list.addAll(filteredList)
+        notifyDataSetChanged()
+    }
+
     override fun getItemCount(): Int {
         return list.size
     }
@@ -33,13 +40,12 @@ class TasksAdapter(private val adapterCallbackInterface: AdapterCallbackInterfac
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): IpoCompanyBusinessViewHolder {
+    ): TaskItemViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item, parent, false)
-        return IpoCompanyBusinessViewHolder(view, adapterCallbackInterface)
-
+        return TaskItemViewHolder(view, adapterCallbackInterface)
     }
 
-    inner class IpoCompanyBusinessViewHolder(view: View, callback: AdapterCallbackInterface) :
+    inner class TaskItemViewHolder(view: View, callback: AdapterCallbackInterface) :
         RecyclerView.ViewHolder(view) {
 
         init {
@@ -53,7 +59,7 @@ class TasksAdapter(private val adapterCallbackInterface: AdapterCallbackInterfac
             }
             itemView.markDoneButton.debouncedOnClick {
                 val item = itemView.tag as ListItem
-                callback.markDoneClicked(item)
+                callback.markDoneClicked(item, adapterPosition)
             }
             itemView.debouncedOnClick {
                 val item = itemView.tag as ListItem
@@ -82,7 +88,7 @@ class TasksAdapter(private val adapterCallbackInterface: AdapterCallbackInterfac
         }
     }
 
-    override fun onBindViewHolder(holder: IpoCompanyBusinessViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: TaskItemViewHolder, position: Int) {
         holder.bind(list[position])
     }
 }
@@ -90,7 +96,7 @@ class TasksAdapter(private val adapterCallbackInterface: AdapterCallbackInterfac
 interface AdapterCallbackInterface {
     fun undoClicked(task: ListItem)
     fun deleteClicked(task: ListItem)
-    fun markDoneClicked(task: ListItem)
+    fun markDoneClicked(task: ListItem, pos: Int)
     fun taskClicked(task: ListItem)
 }
 

@@ -6,5 +6,4 @@ sealed class TasksState {
     data class NotifyItemChange(val pos: Int) : TasksState()
     data class NotifyItemRemoved(val pos: Int) : TasksState()
     data class NotifyItemInserted(val pos: Int) : TasksState()
-
 }
