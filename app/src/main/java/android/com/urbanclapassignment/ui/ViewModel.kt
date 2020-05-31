@@ -60,8 +60,10 @@ class ViewModel(
     }
 
     fun markDone(
-        task: ListItem
+        task: ListItem,pos:Int
     ) {
+        val dbHelper = TasksDBHelper(context)
+        database = dbHelper.writableDatabase
         val cv = ContentValues()
         cv.put("task", task.taskName)
         cv.put("status", 1)
@@ -78,7 +80,6 @@ class ViewModel(
         } catch (e: Exception) {
             Log.e("Exception", e.toString())
         }
-        Log.e("Invalid", "Invalid Data, Check your data first")
     }
 
     fun addItem(task: String) {
@@ -108,7 +109,6 @@ class ViewModel(
         } catch (e: Exception) {
             Log.e("Exception", e.toString())
         }
-        Log.e("Invalid", "Invalid Data, Check your data first")
     }
 
     fun deleteClicked(task: ListItem) {
