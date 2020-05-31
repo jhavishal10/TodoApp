@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -64,27 +63,13 @@ class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
             searchBarOn = false
             searchEditText.isVisible = false
             searchClose.isVisible = false
-            searchEditText.clearComposingText()
+            searchEditText.text.clear()
             adapter.clearItems()
             adapter.addData(tasksList)
         }
         searchEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(
-                s: CharSequence,
-                start: Int,
-                count: Int,
-                after: Int
-            ) {
-            }
-
-            override fun onTextChanged(
-                s: CharSequence,
-                start: Int,
-                before: Int,
-                count: Int
-            ) {
-            }
-
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable) {
                 searchText = s.toString()
                 filter(s.toString())
@@ -115,7 +100,6 @@ class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
     }
 
     private fun filter(text: String) {
-        Log.e("hola", text)
         val filteredList = mutableListOf<ListItem>()
         for (item in tasksList) {
             if (item.taskName.toLowerCase().contains(text.toLowerCase())) {
@@ -142,7 +126,7 @@ class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
     }
 
     override fun taskClicked(task: ListItem) {
-        //open task editor Ui for this
+        //open task editor Ui for this future extension for better UI
     }
 
 }
