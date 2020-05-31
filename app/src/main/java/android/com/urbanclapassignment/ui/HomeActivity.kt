@@ -1,6 +1,7 @@
 package android.com.urbanclapassignment.ui
 
 import android.com.urbanclapassignment.R
+import android.com.urbanclapassignment.StartSnapHelper
 import android.com.urbanclapassignment.model.ListItem
 import android.com.urbanclapassignment.model.TasksState
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -18,7 +20,9 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.add_new_task_layout.*
 import kotlinx.android.synthetic.main.add_new_task_layout.view.*
+import kotlinx.android.synthetic.main.add_new_task_layout.view.prioritySpinner
 
 
 class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
@@ -51,6 +55,9 @@ class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
     }
 
     private fun initUi() {
+        val priorities = mutableListOf("Right Now","Asap","Today","Tomorrow","In this week","In next week","In this month","In next month")
+        val priorityAdapter: ArrayAdapter<String> = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, priorities)
+        priorityAdapter.setDropDownViewResource(R.layout.spinner_item)
         taskRecyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         taskRecyclerView.adapter = adapter
         val snapHelper = StartSnapHelper()
@@ -64,27 +71,13 @@ class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
             searchBarOn = false
             searchEditText.isVisible = false
             searchClose.isVisible = false
-            searchEditText.clearComposingText()
+            searchEditText.text.clear()
             adapter.clearItems()
             adapter.addData(tasksList)
         }
         searchEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(
-                s: CharSequence,
-                start: Int,
-                count: Int,
-                after: Int
-            ) {
-            }
-
-            override fun onTextChanged(
-                s: CharSequence,
-                start: Int,
-                before: Int,
-                count: Int
-            ) {
-            }
-
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable) {
                 searchText = s.toString()
                 filter(s.toString())
@@ -98,6 +91,8 @@ class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
             val alertDialog: AlertDialog = builder.create()
             alertDialog.setCancelable(true)
             alertDialog.show()
+            mView.prioritySpinner.adapter = priorityAdapter
+            mView.prioritySpinner.setSelection(2,true)
             mView.addTaskButton.debouncedOnClick {
                 if (!mView.taskText.text.isNullOrEmpty()) {
                     Toast.makeText(
@@ -106,8 +101,7 @@ class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
                             .substring(0, mView.taskText.text.toString().length) + "........Added",
                         Toast.LENGTH_SHORT
                     ).show()
-
-                    viewModel.addItem(mView.taskText.text.toString())
+                    viewModel.addItem(mView.taskText.text.toString(), mView.prioritySpinner.selectedItemPosition)
                 }
                 alertDialog.dismiss()
             }
@@ -115,7 +109,6 @@ class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
     }
 
     private fun filter(text: String) {
-        Log.e("hola", text)
         val filteredList = mutableListOf<ListItem>()
         for (item in tasksList) {
             if (item.taskName.toLowerCase().contains(text.toLowerCase())) {
@@ -126,23 +119,15 @@ class HomeActivity : AppCompatActivity(), AdapterCallbackInterface {
         adapter.filterList(filteredList)
     }
 
-    override fun undoClicked(task: ListItem) {
-        viewModel.undoClicked(task)
-    }
-
-    override fun deleteClicked(task: ListItem) {
-        viewModel.deleteClicked(task)
-    }
-
+    override fun undoClicked(task: ListItem) { viewModel.undoClicked(task) }
+    override fun deleteClicked(task: ListItem) { viewModel.deleteClicked(task) }
     override fun markDoneClicked(task: ListItem, pos: Int) {
         Handler().postDelayed({
             viewModel.markDone(task, pos)
         }, 500)
-
     }
-
     override fun taskClicked(task: ListItem) {
-        //open task editor Ui for this
+        //open task editor Ui for this future extension for better UI
     }
 
 }

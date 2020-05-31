@@ -40,7 +40,9 @@ class ViewModel(
                 cursor.getString(1)
             val status: String =
                 cursor.getString(2)
-            tasksList.add(ListItem(taskId.toLong(), name, status.toInt()))
+            val priority: String =
+                cursor.getString(3)
+            tasksList.add(ListItem(taskId.toLong(), name, status.toInt(),priority.toInt()))
             i++
         }
         _tasksLiveData.value = TasksState.Data(tasksList)
@@ -55,7 +57,7 @@ class ViewModel(
             null,
             null,
             null,
-            null, TasksContract.TasksEntry.COLUMN_TIMESTAMP + " DESC"
+            null, TasksContract.TasksEntry.COLUMN_PRIORITY + " ASC"
         )
     }
 
@@ -82,11 +84,12 @@ class ViewModel(
         }
     }
 
-    fun addItem(task: String) {
+    fun addItem(task: String, selectedItemPosition: Int) {
         val name: String = task
         val cv = ContentValues()
         cv.put(TasksContract.TasksEntry.COLUMN_TASK, name)
         cv.put(TasksContract.TasksEntry.COLUMN_STATUS, 0)
+        cv.put(TasksContract.TasksEntry.COLUMN_PRIORITY, selectedItemPosition )
         database?.insert(TasksContract.TasksEntry.TABLE_NAME, null, cv)
         _tasksLiveData.value = TasksState.Clear
         loadData()
@@ -96,6 +99,7 @@ class ViewModel(
         val cv = ContentValues()
         cv.put("task", task.taskName)
         cv.put("status", 0)
+        cv.put("status", task.priority)
         try {
             database?.update(
                 TasksContract.TasksEntry.TABLE_NAME,
